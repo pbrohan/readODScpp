@@ -2,8 +2,7 @@ Package: readODScpp
 Title: Read Ods Files (Using C++)
 Version: 0.0.0.9000
 Authors@R: 
-    person("Peter", "Brohan", , "first.last@example.com", role = c("aut", "cre"),
-)
+    person("Peter", "Brohan", , "first.last@example.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8

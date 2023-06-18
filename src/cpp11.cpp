@@ -5,7 +5,7 @@
 #include "cpp11/declarations.hpp"
 #include <R_ext/Visibility.h>
 
-// readods.cpp
+// get_sheet_names.cpp
 cpp11::strings ods_get_sheet_names(const std::string file);
 extern "C" SEXP _readODScpp_ods_get_sheet_names(SEXP file) {
   BEGIN_CPP11

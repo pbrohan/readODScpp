@@ -1,1 +1,2 @@
-#' @useDynLib pkgname, .registration = TRUE
+#' @useDynLib readODScpp, .registration = TRUE
+NULL

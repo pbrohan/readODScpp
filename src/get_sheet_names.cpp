@@ -2,9 +2,9 @@
 #include "cpp11/r_string.hpp"
 #include "cpp11/strings.hpp"
 
-#include ".\rapidxml\rapidxml.hpp"
-#include ".\readxl\zip.cpp"
-#include ".\is_ods.hpp"
+#include "rapidxml/rapidxml.hpp"
+#include "readxl/zip.h"
+#include "is_ods.hpp"
 
 #include <string>
 
