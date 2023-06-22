@@ -1,7 +1,6 @@
-#pragma once
-
 #include "rapidxml/rapidxml.hpp"
 #include "readxl/zip.cpp"
+
 
 #include <string>
 

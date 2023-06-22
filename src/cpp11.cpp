@@ -6,16 +6,16 @@
 #include <R_ext/Visibility.h>
 
 // get_sheet_names.cpp
-cpp11::strings ods_get_sheet_names(const std::string file);
-extern "C" SEXP _readODScpp_ods_get_sheet_names(SEXP file) {
+cpp11::strings ods_get_sheet_names(const std::string file, const bool include_external_data);
+extern "C" SEXP _readODScpp_ods_get_sheet_names(SEXP file, SEXP include_external_data) {
   BEGIN_CPP11
-    return cpp11::as_sexp(ods_get_sheet_names(cpp11::as_cpp<cpp11::decay_t<const std::string>>(file)));
+    return cpp11::as_sexp(ods_get_sheet_names(cpp11::as_cpp<cpp11::decay_t<const std::string>>(file), cpp11::as_cpp<cpp11::decay_t<const bool>>(include_external_data)));
   END_CPP11
 }
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_readODScpp_ods_get_sheet_names", (DL_FUNC) &_readODScpp_ods_get_sheet_names, 1},
+    {"_readODScpp_ods_get_sheet_names", (DL_FUNC) &_readODScpp_ods_get_sheet_names, 2},
     {NULL, NULL, 0}
 };
 }

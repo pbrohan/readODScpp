@@ -3,16 +3,14 @@
 #include "cpp11/strings.hpp"
 
 #include "rapidxml/rapidxml.hpp"
-#include "readxl/zip.h"
 #include "is_ods.hpp"
 
 #include <string>
 
 
 
-
 [[cpp11::register]]
-cpp11::strings ods_get_sheet_names(const std::string file){
+cpp11::strings ods_get_sheet_names(const std::string file, const bool include_external_data){
     if (!is_ods(file)){
         throw std::invalid_argument(file + "is not a correct ODS file");
     }
@@ -33,6 +31,11 @@ cpp11::strings ods_get_sheet_names(const std::string file){
     for (rapidxml::xml_node<>* sheetData = rootNode->first_node("table:table"); 
             sheetData;
             sheetData = sheetData->next_sibling("table:table")){
+
+
+        if (!include_external_data && sheetData->first_node("table:table-source")){
+            continue;
+        }
         if (i >= n) {
             n *= 2;
             sheetNames = Rf_lengthgets(sheetNames, n);

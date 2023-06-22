@@ -4,14 +4,16 @@
 \alias{list_ods_sheets}
 \title{List all sheets in an ODS File}
 \usage{
-list_ods_sheets(path)
+list_ods_sheets(path, include_external_data = FALSE)
 }
 \arguments{
 \item{path}{Path to the ods file}
+
+\item{include_external_data}{A boolean value to show or hide sheets containing linked data (default false)}
 }
 \value{
 A character vector of sheet names.
 }
 \description{
-List all shgeets in an ods file.
+List all sheets in an ods file.
 }
