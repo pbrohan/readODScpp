@@ -13,16 +13,16 @@ extern "C" SEXP _readODScpp_ods_get_sheet_names(SEXP file, SEXP include_external
   END_CPP11
 }
 // geta1.cpp
-cpp11::r_string get_a1(const std::string file, const int sheet);
-extern "C" SEXP _readODScpp_get_a1(SEXP file, SEXP sheet) {
+cpp11::r_string get_cell_range(const std::string file, const int sheet);
+extern "C" SEXP _readODScpp_get_cell_range(SEXP file, SEXP sheet) {
   BEGIN_CPP11
-    return cpp11::as_sexp(get_a1(cpp11::as_cpp<cpp11::decay_t<const std::string>>(file), cpp11::as_cpp<cpp11::decay_t<const int>>(sheet)));
+    return cpp11::as_sexp(get_cell_range(cpp11::as_cpp<cpp11::decay_t<const std::string>>(file), cpp11::as_cpp<cpp11::decay_t<const int>>(sheet)));
   END_CPP11
 }
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_readODScpp_get_a1",              (DL_FUNC) &_readODScpp_get_a1,              2},
+    {"_readODScpp_get_cell_range",      (DL_FUNC) &_readODScpp_get_cell_range,      2},
     {"_readODScpp_ods_get_sheet_names", (DL_FUNC) &_readODScpp_ods_get_sheet_names, 2},
     {NULL, NULL, 0}
 };
