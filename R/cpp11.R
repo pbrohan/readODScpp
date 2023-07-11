@@ -3,3 +3,7 @@
 ods_get_sheet_names <- function(file, include_external_data) {
   .Call(`_readODScpp_ods_get_sheet_names`, file, include_external_data)
 }
+
+get_a1 <- function(file, sheet) {
+  .Call(`_readODScpp_get_a1`, file, sheet)
+}

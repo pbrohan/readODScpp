@@ -3,7 +3,9 @@
 #include "cpp11/strings.hpp"
 
 #include "rapidxml/rapidxml.hpp"
-#include "is_ods.hpp"
+#include "readxl/zip.cpp"
+#include "is_ods.h"
+
 
 #include <string>
 

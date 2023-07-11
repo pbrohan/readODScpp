@@ -1,11 +1,10 @@
 #pragma once
-
 #include "zip.h"
-
 #include "../rapidxml/rapidxml_print.hpp"
 
 #include "cpp11/function.hpp"
 #include "cpp11/raws.hpp"
+
 
 std::string zip_buffer(const std::string& zip_path,
                        const std::string& file_path) {

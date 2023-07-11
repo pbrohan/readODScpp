@@ -1,8 +1,9 @@
+#include "is_ods.h"
 #include "rapidxml/rapidxml.hpp"
-#include "readxl/zip.cpp"
 
 
-#include <string>
+
+#include <cstring>
 
 
 bool is_ods(const std::string file){
