@@ -7,10 +7,16 @@
 read_ods_cpp(
   path,
   sheet = 1,
-  startcol = 1,
-  stopcol = -1,
-  startrow = 1,
-  stoprow = -1
+  col_names = TRUE,
+  col_types = NULL,
+  na = "",
+  skip = 0,
+  formula_as_formula = FALSE,
+  range = NULL,
+  row_names = FALSE,
+  strings_as_factors = FALSE,
+  check_names = FALSE,
+  verbose = FALSE
 )
 }
 \description{

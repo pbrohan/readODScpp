@@ -14,6 +14,27 @@ for ods files largely because the file format considers it in the same manner as
 **Why not?** Many other packages (previous versions of readODS, tidyODS, pandas) do not exhibit this behaviour
 by default, and so this would represent a change of functionality.
 
+## Changed behaviour when accesing small amounts of data
+
+- Now reads single columns from sheets when requested (previously gave `Error in irow:nrow(x) : argument of length 0)
+- When a sheet returns a single row or column (or a single element), and passed `true` for row names or column names, now raises a warning and returns the data without names (previously would name the columns, add a row above/or below the column, and also return the data, e.g. a sheet with just `A` in A1 would return: 
+
+``` bash
+     A
+1   NA
+2    A
+```
+
+Now raises `Cannot make column/row names if this would cause the dataframe to be empty.` and returns
+
+``` bash
+    V1
+1   A
+```
+
+## Range now accepts sheets as part of text
+
+e.g. "Sheet1!A2:B3"
 
 ## Why no objects and classes? That's what readxl does!
 

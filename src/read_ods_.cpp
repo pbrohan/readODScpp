@@ -114,13 +114,13 @@ std::vector<std::vector<rapidxml::xml_node<>*>> find_rows(rapidxml::xml_node<>* 
     for (int i = 1; i <= stop_row || stop_row < 1; ){
         // i keeps track of what nominal row we are on
 
-        // Check for row repeats
-        if (row->first_attribute("table:numbers-rows-repeated")){
-            row_repeat_count = std::atoi(row->first_attribute("table:number-rows-repeated")->value());
-        } else {
-            row_repeat_count = 1;
-        }
 
+        // Check for row repeats
+        if (row->first_attribute("table:number-rows-repeated") == nullptr){
+            row_repeat_count = 1;    
+        } else {
+            row_repeat_count = std::atoi(row->first_attribute("table:number-rows-repeated")->value());
+        }
         // Stop if all repeats done, or if we're at the last requested row
         for (int r_repeat = 0; r_repeat < row_repeat_count && (stop_row < 1 || r_repeat + i <= stop_row); r_repeat++){
 
@@ -149,7 +149,7 @@ std::vector<std::vector<rapidxml::xml_node<>*>> find_rows(rapidxml::xml_node<>* 
                     }
 
                     // Stop if all column repeats done, or if we're at the last requested row
-                    for (int c_repeat = 0; c_repeat < col_repeat_count && (stop_col < 1 || c_repeat + j <= stop_col); c_repeat ++){
+                    for (int c_repeat = 0; c_repeat < col_repeat_count && (stop_col < 1 || c_repeat + j <= stop_col); c_repeat++){
                         
                         bool is_blank = true;
                         // If this cell is blank (i.e. contains no children)
@@ -165,7 +165,7 @@ std::vector<std::vector<rapidxml::xml_node<>*>> find_rows(rapidxml::xml_node<>* 
 
                         // If we're in range add pointer to the array
                         if (stop_col < 1 || j + c_repeat >= start_col){
-                            rows[i + r_repeat - start_row].push_back(cell);
+                            rows[i - start_row].push_back(cell);
                             if(!is_blank){
                                 last_non_blank = rows[i+ r_repeat - start_row].size();
                             }
@@ -211,7 +211,8 @@ cpp11::strings read_ods_(const std::string file,
     int stop_row,
     int start_col,
     int stop_col,
- const int sheet) {
+ const int sheet,
+    const bool formula_as_formula) {
     if(!is_ods(file)){
         throw std::invalid_argument(file + "is not a correct ODS file");
     } 
@@ -261,7 +262,7 @@ cpp11::strings read_ods_(const std::string file,
     for (unsigned int i = 0; i < contents.size(); i++){
         for (unsigned int j = 0; j < contents[i].size(); j++){
             cell_values[t] = (contents[i][j] != 0) ?
-                Rf_mkCharCE(parse_single_cell(contents[i][j], false, true).c_str(), CE_UTF8) : NA_STRING;
+                Rf_mkCharCE(parse_single_cell(contents[i][j], formula_as_formula, true).c_str(), CE_UTF8) : NA_STRING;
             t++;
         }
         // Pad rows to even width
@@ -273,6 +274,5 @@ cpp11::strings read_ods_(const std::string file,
             }
         }
     }
-
     return cell_values;
  }
