@@ -2,4 +2,5 @@
 
 export(get_num_sheets_in_ods)
 export(list_ods_sheets)
+export(read_ods)
 useDynLib(readODScpp, .registration = TRUE)

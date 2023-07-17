@@ -21,5 +21,5 @@ Get the number of sheets in an ods file
 use \code{\link{read_ods}} to read the data
 }
 \author{
-Chung-hong Chan \href{mailto:chainsawtiney@gmail.com}{chainsawtiney@gmail.com}, Gerrit-Jan Schutten \href{mailto:phonixor@gmail.com}{phonixor@gmail.com}
+Peter Brohan \href{mailto:peter.brohan+cran@gmail.com}{peter.brohan+cran@gmail.com}, Chung-hong Chan \href{mailto:chainsawtiney@gmail.com}{chainsawtiney@gmail.com}, Gerrit-Jan Schutten \href{mailto:phonixor@gmail.com}{phonixor@gmail.com}
 }

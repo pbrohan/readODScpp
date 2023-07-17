@@ -17,3 +17,9 @@ A character vector of sheet names.
 \description{
 List all sheets in an ods file.
 }
+\seealso{
+use \code{\link{read_ods}} to read the data
+}
+\author{
+Peter Brohan \href{mailto:peter.brohan+cran@gmail.com}{peter.brohan+cran@gmail.com}, Chung-hong Chan \href{mailto:chainsawtiney@gmail.com}{chainsawtiney@gmail.com}, Gerrit-Jan Schutten \href{mailto:phonixor@gmail.com}{phonixor@gmail.com}
+}

@@ -7,7 +7,7 @@
 #' @return A character vector of sheet names.
 #' @author Peter Brohan <peter.brohan+cran@@gmail.com>, Chung-hong Chan <chainsawtiney@@gmail.com>, Gerrit-Jan Schutten <phonixor@@gmail.com>
 #' @seealso
-#' use \cose{\link{read_ods}} to read the data
+#' use \code{\link{read_ods}} to read the data
 #' @export
 list_ods_sheets <- function(path, include_external_data = FALSE) {
     return(ods_get_sheet_names_(path, include_external_data))

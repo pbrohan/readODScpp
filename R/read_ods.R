@@ -73,7 +73,6 @@
 #' @param skip the number of lines of the data file to skip before beginning to read data. If this parameter is larger than the total number of lines in the ods file, an empty data frame is returned.
 #' @param formula_as_formula logical, a switch to display formulas as formulas "SUM(A1:A3)" or as the resulting value "3"... or "8".. . Default is FALSE.
 #' @param range selection of rectangle using Excel-like cell range, such as \code{range = "D12:F15"} or \code{range = "R1C12:R6C15"}. Cell range processing is handled by the \code{\link[=cellranger]{cellranger}} package.
-#' @param formulaAsFormula for read.ods only, a switch to display formulas as formulas "SUM(A1:A3)" or as the resulting value "3"... or "8"..
 #' @param row_names logical, indicating whether the file contains the names of the rows as its first column. Default is FALSE.
 #' @param strings_as_factors logical, if character columns to be converted to factors. Default is FALSE.
 #' @param check_names logical, passed down to base::data.frame(). Default is FALSE.
