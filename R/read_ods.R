@@ -22,7 +22,7 @@
     if(is.null(range)){
         skip <- check_nonnegative_integer(skip, "skip")
         limits <- c(
-            min_row = skip,
+            min_row = skip + 1,
             max_row = -1,
             min_col = 1,
             max_col = -1
@@ -59,11 +59,39 @@
     return (df)
 }
 
-#' Read the data from an ODS file
-#' 
-#' 
-#' 
-read_ods_cpp <- function(path,
+#' Read Data From ODS File
+#'
+#' read_ods is a function to read a single sheet from an ods file and return a data frame.
+#' read.ods always returns a list of data frames with one data frame per sheet. This is a wrapper to read_ods for backward compatibility with previous version of readODS. Please use read_ods if possible.
+#'
+#' @param path path to the ods file.
+#' @param sheet sheet to read. Either a string (the sheet name), or an integer sheet number. The default is 1.
+#' @param col_names logical, indicating whether the file contains the names of the variables as its first line. Default is TRUE.
+#' @param col_types Either NULL to guess from the spreadsheet or refer to [readr::type_convert()] to specify cols specification. NA will return a data frame with all columns being "characters".
+#' @param na Character vector of strings to use for missing values. By default read_ods converts blank cells to missing data. It can also be set to
+#' NULL, so that empty cells are treated as NA.
+#' @param skip the number of lines of the data file to skip before beginning to read data. If this parameter is larger than the total number of lines in the ods file, an empty data frame is returned.
+#' @param formula_as_formula logical, a switch to display formulas as formulas "SUM(A1:A3)" or as the resulting value "3"... or "8".. . Default is FALSE.
+#' @param range selection of rectangle using Excel-like cell range, such as \code{range = "D12:F15"} or \code{range = "R1C12:R6C15"}. Cell range processing is handled by the \code{\link[=cellranger]{cellranger}} package.
+#' @param formulaAsFormula for read.ods only, a switch to display formulas as formulas "SUM(A1:A3)" or as the resulting value "3"... or "8"..
+#' @param row_names logical, indicating whether the file contains the names of the rows as its first column. Default is FALSE.
+#' @param strings_as_factors logical, if character columns to be converted to factors. Default is FALSE.
+#' @param check_names logical, passed down to base::data.frame(). Default is FALSE.
+#' @param verbose logical, if messages should be displayed. Default is FALSE.
+#' @return A data frame (\code{data.frame}) containing a representation of data in the ods file.
+#' @note Currently, ods files that linked to external data source cannot be read. Merged cells cannot be parsed correctly.
+#' @author Peter Brohan <peter.brohan+cran@@gmail.com>, Chung-hong Chan <chainsawtiney@@gmail.com>, Gerrit-Jan Schutten <phonixor@@gmail.com>
+#' @examples
+#' \dontrun{
+#' # Read a file
+#' read_ods("starwars.ods")
+#' # Read a specific sheet, e.g. the 2nd sheet
+#' read_ods("starwars.ods", sheet = 2)
+#' # Read a specific range, e.g. A1:C11
+#' read_ods("starwars.ods", sheet = 2, range = "A1:C11")
+#' }
+#' @export
+read_ods <- function(path,
                         sheet = 1,
                         col_names = TRUE,
                         col_types = NULL,
@@ -77,24 +105,50 @@ read_ods_cpp <- function(path,
                         verbose = FALSE
 
 ){
+    if (missing(path) || !is.character(path)){
+        stop("No file path was provided for the 'path' argument. Please provide a path to a file to import.")
+    }
+    if (!file.exists(path)){
+        stop("file does not exist")
+    }
+    if (!is.logical(col_names)){
+        stop("col_names must be of type `boolean`")
+    }
+    if (!is.logical(formula_as_formula)){
+        stop("formula_as_formula must be of type `boolean`")
+    }
+    if (!is.logical(row_names)){
+        stop("row_names must be of type `boolean`")
+    }
+    if (!is.logical(strings_as_factors)){
+        stop("strings_as_factors must be of type `boolean`")
+    }
+    if (!is.logical(check_names)){
+        stop("check_names must be of type `boolean`")
+    }
+    if (!is.logical(verbose)){
+        stop("verbose must be of type `boolean`")
+    }
 
     # Get cell range info
     limits <- .standardise_limits(range, skip)
     # Get sheet number.
-    sheets <- ods_get_sheet_names(path, TRUE)
+    sheets <- ods_get_sheet_names_(path, TRUE)
     sheet_name <- cellranger::as.cell_limits(range)[["sheet"]]
     if(!is.null(range) && !is.na(sheet_name)){
         if(sheet != 1){
             warning("Sheet suggested in range and using sheet argument. Defaulting to range", call. = FALSE)
         }
-        if(sheet_name %in% sheets){
-            sheet = match(sheet_name, sheets)
+        if(any(is_in_sheet_names)){
+            is_in_sheet_names <- stringi::stri_cmp(sheet_name, sheets) == 0
+            sheet = which(is_in_sheet_names)
         } else {
             stop(paste0("No sheet found with name '", sheet_name, "'"), call. = FALSE)
         }
     } else {
-        if (!is.numeric(sheet) && (sheet %in% sheets)){
-            sheet = match(sheet, sheets)
+        is_in_sheet_names <- stringi::stri_cmp(sheet, sheets) == 0
+        if (!is.numeric(sheet) && any(is_in_sheet_names)){
+            sheet = which(is_in_sheet_names)
         } else if (!is.numeric(sheet)) {
             stop(paste0("No sheet found with name '", sheet, "'", ),call. = FALSE)
         }
@@ -110,14 +164,15 @@ read_ods_cpp <- function(path,
         limits["max_col"],
         sheet,
         formula_as_formula)
+    if(strings[1] == 0 || strings[2] == 0){
+        warning("empty sheet, return empty data frame.", call. = FALSE)
+        return(data.frame())
+    }
     res <- strings[-1:-2] |>
         matrix(ncol = strtoi(strings[1]), byrow = TRUE) |>
         as.data.frame(stringsAsFactors = FALSE)
-    if (col_names || row_names){
     res <- .change_df_with_col_row_header(res, col_names, row_names)
-    }
-    res <-data.frame(res, check.names = check_names)
-
+    res <- data.frame(res, check.names = check_names)
     if (inherits(col_types, 'col_spec')){
         res <- readr::type_convert(df = res, col_types = col_types, na = na)
     } else if (length(col_types) == 0 && is.null(col_types)){
@@ -134,3 +189,4 @@ read_ods_cpp <- function(path,
 
     return(res)
 }
+

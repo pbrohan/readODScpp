@@ -212,7 +212,7 @@ cpp11::strings read_ods_(const std::string file,
  const int sheet,
     const bool formula_as_formula) {
     if(!is_ods(file)){
-        throw std::invalid_argument(file + "is not a correct ODS file");
+        throw std::invalid_argument(file + " is not a correct ODS file");
     } 
     if(sheet < 1){
         throw std::invalid_argument("Cannot have sheet index less than 1");
@@ -267,7 +267,7 @@ cpp11::strings read_ods_(const std::string file,
         if(contents[i].size() < out_width){
             unsigned int row_width = contents[i].size();
             for (unsigned int j = 0; j + row_width < out_width; j++){
-                cell_values[t] = NA_STRING;
+                cell_values[t] = "";
                 t++;
             }
         }

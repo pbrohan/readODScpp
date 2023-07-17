@@ -6,10 +6,10 @@
 #include <R_ext/Visibility.h>
 
 // get_sheet_names.cpp
-cpp11::strings ods_get_sheet_names(const std::string file, const bool include_external_data);
-extern "C" SEXP _readODScpp_ods_get_sheet_names(SEXP file, SEXP include_external_data) {
+cpp11::strings ods_get_sheet_names_(const std::string file, const bool include_external_data);
+extern "C" SEXP _readODScpp_ods_get_sheet_names_(SEXP file, SEXP include_external_data) {
   BEGIN_CPP11
-    return cpp11::as_sexp(ods_get_sheet_names(cpp11::as_cpp<cpp11::decay_t<const std::string>>(file), cpp11::as_cpp<cpp11::decay_t<const bool>>(include_external_data)));
+    return cpp11::as_sexp(ods_get_sheet_names_(cpp11::as_cpp<cpp11::decay_t<const std::string>>(file), cpp11::as_cpp<cpp11::decay_t<const bool>>(include_external_data)));
   END_CPP11
 }
 // read_ods_.cpp
@@ -22,8 +22,8 @@ extern "C" SEXP _readODScpp_read_ods_(SEXP file, SEXP start_row, SEXP stop_row, 
 
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
-    {"_readODScpp_ods_get_sheet_names", (DL_FUNC) &_readODScpp_ods_get_sheet_names, 2},
-    {"_readODScpp_read_ods_",           (DL_FUNC) &_readODScpp_read_ods_,           7},
+    {"_readODScpp_ods_get_sheet_names_", (DL_FUNC) &_readODScpp_ods_get_sheet_names_, 2},
+    {"_readODScpp_read_ods_",            (DL_FUNC) &_readODScpp_read_ods_,            7},
     {NULL, NULL, 0}
 };
 }

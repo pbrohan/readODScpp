@@ -12,9 +12,9 @@
 
 
 [[cpp11::register]]
-cpp11::strings ods_get_sheet_names(const std::string file, const bool include_external_data){
+cpp11::strings ods_get_sheet_names_(const std::string file, const bool include_external_data){
     if (!is_ods(file)){
-        throw std::invalid_argument(file + "is not a correct ODS file");
+        throw std::invalid_argument(file + " is not a correct ODS file");
     }
     cpp11::writable::strings sheetNames(1);
 
