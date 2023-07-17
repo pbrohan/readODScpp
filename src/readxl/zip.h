@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\rapidxml\rapidxml.hpp"
+#include "../rapidxml/rapidxml.hpp"
 #include <string>
 
 std::string zip_buffer(const std::string& zip_path, const std::string& file_path);
