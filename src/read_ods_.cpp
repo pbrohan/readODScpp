@@ -150,7 +150,6 @@ std::vector<std::vector<rapidxml::xml_node<>*>> find_rows(rapidxml::xml_node<>* 
 
                     // Stop if all column repeats done, or if we're at the last requested row
                     for (int c_repeat = 0; c_repeat < col_repeat_count && (stop_col < 1 || c_repeat + j <= stop_col); c_repeat++){
-                        
                         bool is_blank = true;
                         // If this cell is blank (i.e. contains no children)
                         if (cell->first_node() == 0){
@@ -162,12 +161,11 @@ std::vector<std::vector<rapidxml::xml_node<>*>> find_rows(rapidxml::xml_node<>* 
                             // Otherwise mark that cell is not blank
                             is_blank = false;
                         }
-
                         // If we're in range add pointer to the array
                         if (stop_col < 1 || j + c_repeat >= start_col){
                             rows[i - start_row].push_back(cell);
                             if(!is_blank){
-                                last_non_blank = rows[i+ r_repeat - start_row].size();
+                                last_non_blank = rows[i - start_row].size();
                             }
                         }
     
@@ -182,7 +180,7 @@ std::vector<std::vector<rapidxml::xml_node<>*>> find_rows(rapidxml::xml_node<>* 
 
                 }
                 // Remove trailing blank cells
-                rows[i + r_repeat - start_row].resize(last_non_blank);
+                rows[i - start_row].resize(last_non_blank);
                 
             }
             i++;
