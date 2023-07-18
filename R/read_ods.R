@@ -62,7 +62,6 @@
 #' Read Data From ODS File
 #'
 #' read_ods is a function to read a single sheet from an ods file and return a data frame.
-#' read.ods always returns a list of data frames with one data frame per sheet. This is a wrapper to read_ods for backward compatibility with previous version of readODS. Please use read_ods if possible.
 #'
 #' @param path path to the ods file.
 #' @param sheet sheet to read. Either a string (the sheet name), or an integer sheet number. The default is 1.
@@ -142,14 +141,14 @@ read_ods <- function(path,
             is_in_sheet_names <- stringi::stri_cmp(sheet_name, sheets) == 0
             sheet = which(is_in_sheet_names)
         } else {
-            stop(paste0("No sheet found with name '", sheet_name, "'"), call. = FALSE)
+            stop(paste0("No sheet found with name '", sheet_name, "'", sep = ""), call. = FALSE)
         }
     } else {
         is_in_sheet_names <- stringi::stri_cmp(sheet, sheets) == 0
         if (!is.numeric(sheet) && any(is_in_sheet_names)){
             sheet = which(is_in_sheet_names)
         } else if (!is.numeric(sheet)) {
-            stop(paste0("No sheet found with name '", sheet, "'", ),call. = FALSE)
+            stop(paste0("No sheet found with name '", sheet, "'", sep = ""),call. = FALSE)
         }
         if (sheet > length(sheets)){
             stop(paste0("File contains only ", length(sheets), " sheets. Sheet index out of range.", call. = FALSE))
