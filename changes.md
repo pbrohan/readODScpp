@@ -34,9 +34,24 @@ Now raises `Cannot make column/row names if this would cause the dataframe to be
 
 ## Range now accepts sheets as part of text
 
-e.g. "Sheet1!A2:B3"
+e.g. "Sheet1!A2:B3" will now access Sheet1 if it exists (or throw an error if it does not). Sheets defined in ranges overrule sheets defined using `sheets`
+
+## Merged cells now work correctly (Issue #2)
+
+The value for the merged cell is placed in the top-left cell. All other cells that were part of the merge are `NA`. 
+
+**Note:** This isn't actually necessarily true. The OO spec allows cells covered by merges to contain values,, although these are not displayed (by Excel anyway). This contents is in fact parsed in the same way as a normal cell however. This poses a small problem as the output in this case is not the same as the user might expect, however it faithfully records the information held in the sheet. It's not possible to add data to cells this way using spreadsheet software (that I know of) so this is unlikely to be an issue.
+
+The problem mentioned by DataStategist in Issue #2 still persists, in that moving the data to the top-left of the merged cell does not always line up visually with the intention of the author, however without a lot of second-guessing it is not possible to know which cell is the most appropriate for the contents to lie in. 
+
+
+## Speed (Issue #37)
+
+Parsing is now done in C++ which should significantly improve speed. Performance is similar for small sheets, and significantly faster for larger workbooks. The memory footprint for larger sheets is also reduced, which goes some way towards solving Issue #71, although the whole of `contents.xml` still needs to be loaded into memory at once, and so there is still a limit. The file referenced in the issue now takes ~10GB of ram, and loads in ~2 mins on my machine, which is still slow, but an improvement. 
+
+Speed is also improved as the package will now only parse the requested range of a sheet if requested, which significantly speeds up gathering a small amount of data from a large sheet
 
 ## Why no objects and classes? That's what readxl does!
 
-I think they make things hard to read. We could create a worksheet object and use internal methods to read the data, 
+I think they make things hard to read (and I am bad at them). We could create a worksheet object and use internal methods to read the data, 
 but it would still need to be instantiated every time we read the sheet. 

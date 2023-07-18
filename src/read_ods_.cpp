@@ -50,9 +50,6 @@ std::string parse_p(rapidxml::xml_node<>* node){
 }
 
 std::string parse_textp(rapidxml::xml_node<>* cell){
-    //This isn't very efficient. It is theoretically faster to make a list of pointers, assign the 
-    //memory first and then concatenate them all into the freed memory. However this is hard to understand
-    //and not a significant problem. If you were looking for efficincies though, this would be a good choice.
     std::string out;
     int i = 0;
     for (rapidxml::xml_node<>* n = cell->first_node("text:p"); n ; n=n->next_sibling("text:p")){
@@ -139,8 +136,16 @@ std::vector<std::vector<rapidxml::xml_node<>*>> find_rows(rapidxml::xml_node<>* 
                 // if row is not blank, and in range deal with cells
             } else if(i + r_repeat >= start_row) {
                 unsigned int last_non_blank = 0;
-                cell = row->first_node("table:table-cell");
+                cell = row->first_node();
                 for (int j = 1; j <= stop_col || stop_col < 1; ){
+                    // find first cell or covered cell
+                    while(cell != 0){   
+                        if (strcmp(cell->name(),"table:table-cell")==0 || strcmp(cell->name(), "table:covered-table-cell")==0){
+                            break;
+                        } else {
+                            cell = cell->next_sibling();
+                        }
+                    }
                     // Check for column repeats
                     if (cell->first_attribute("table:number-columns-repeated")){
                         col_repeat_count = std::atoi(cell->first_attribute("table:number-columns-repeated")->value());
@@ -172,7 +177,7 @@ std::vector<std::vector<rapidxml::xml_node<>*>> find_rows(rapidxml::xml_node<>* 
                     j++;
 
                     }
-                    cell = cell->next_sibling("table:table-cell");
+                    cell = cell->next_sibling();
                     // If that was the last cell, stop.
                     if (cell == 0){
                         break;

@@ -50,7 +50,6 @@ A data frame (\code{data.frame}) containing a representation of data in the ods 
 }
 \description{
 read_ods is a function to read a single sheet from an ods file and return a data frame.
-read.ods always returns a list of data frames with one data frame per sheet. This is a wrapper to read_ods for backward compatibility with previous version of readODS. Please use read_ods if possible.
 }
 \note{
 Currently, ods files that linked to external data source cannot be read. Merged cells cannot be parsed correctly.
