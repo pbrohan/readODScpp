@@ -1,0 +1,30 @@
+#' List all sheets in an FODS File
+#' 
+#' List all sheets in an fods file.
+#' 
+#' @param path Path to the fods file
+#' @param include_external_data A boolean value to show or hide sheets containing linked data (default false)
+#' @return A character vector of sheet names.
+#' @author Peter Brohan <peter.brohan+cran@@gmail.com>, Chung-hong Chan <chainsawtiney@@gmail.com>, Gerrit-Jan Schutten <phonixor@@gmail.com>
+#' @seealso
+#' use \code{\link{read_fods}} to read the data
+#' @export
+list_ods_sheets <- function(path, include_external_data = FALSE) {
+    return(get_flat_sheet_names_(path, include_external_data))
+}
+
+#' Get the Number of Sheets in an FODS File
+#'
+#' Get the number of sheets in an fods file
+#'
+#' @param path path to the fods file
+#' @param include_external_data A boolean value declaring if external data sheets should be counted
+#' @return Number of sheets
+#' @author Peter Brohan <peter.brohan+cran@@gmail.com>, Chung-hong Chan <chainsawtiney@@gmail.com>, Gerrit-Jan Schutten <phonixor@@gmail.com>
+#' @seealso
+#' use \code{\link{read_fods}} to read the data
+#' @export
+get_num_sheets_in_fods <- function(path, include_external_data = FALSE) {
+    sheets <- get_flat_sheet_names_(path, include_external_data)
+    return(length(sheets))
+}

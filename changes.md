@@ -53,7 +53,9 @@ Speed is also improved as the package will now only parse the requested range of
 
 ## read_fods
 
-Now reads flat ods files. This checks to make sure that it's a correct single-document ODS file, and uses a common .read_ods function internally to read either flat or packaged ODS files
+Now reads flat ods files using `read_fods`. This checks to make sure that it's a correct single-document ODS file, and uses a common .read_ods function internally to read either flat or packaged ODS files. Doesn't have a function to distinguish (a la `read_excel`), as the sensible name for this would be `read_ods`. Could check inside function maybe, but this would require either the file extensions to be correct, or some other marker to be identified. 
+
+Also added related `list_fods_sheets` and `get_num_sheets_in_fods`
 
 ## Why no objects and classes? That's what readxl does!
 
