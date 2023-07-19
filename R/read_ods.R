@@ -1,6 +1,6 @@
 .change_df_with_col_row_header <- function(x, col_header, row_header){
     if((nrow(x) < 2 && col_header )|| (ncol(x) < 2 && row_header)){
-        warning("Cannot make column/row names if this would cause the dataframe to be empty.")
+        warning("Cannot make column/row names if this would cause the dataframe to be empty.", call. = FALSE)
         return(x)
     }
     irow <- ifelse(col_header, 2, 1)
@@ -29,9 +29,13 @@
         )
     } else {
         if(skip != 0){
-            warning("Range and non-zero value for skip given. Defaulting to range.")
+            warning("Range and non-zero value for skip given. Defaulting to range.", call. = FALSE)
         }
+        tryCatch({
         limits <- cellranger::as.cell_limits(range)
+        }, error = function(e){
+            stop("Invalid `range`")
+        })
         limits <- c(
             min_row = limits[["ul"]][1],
             max_row = limits[["lr"]][1],
@@ -59,6 +63,45 @@
     return (df)
 }
 
+.check_read_args <- function(path,
+                        sheet = 1,
+                        col_names = TRUE,
+                        col_types = NULL,
+                        na = "",
+                        skip = 0,
+                        formula_as_formula = FALSE,
+                        range = NULL,
+                        row_names = FALSE,
+                        strings_as_factors = FALSE,
+                        check_names = FALSE,
+                        verbose = FALSE){
+    if (missing(path) || !is.character(path)){
+        stop("No file path was provided for the 'path' argument. Please provide a path to a file to import.", call. = FALSE)
+    }
+    if (!file.exists(path)){
+        stop("file does not exist", call. = FALSE)
+    }
+    if (!is.logical(col_names)){
+        stop("col_names must be of type `boolean`", call. = FALSE)
+    }
+    if (!is.logical(formula_as_formula)){
+        stop("formula_as_formula must be of type `boolean`", call. = FALSE)
+    }
+    if (!is.logical(row_names)){
+        stop("row_names must be of type `boolean`", call. = FALSE)
+    }
+    if (!is.logical(strings_as_factors)){
+        stop("strings_as_factors must be of type `boolean`", call. = FALSE)
+    }
+    if (!is.logical(check_names)){
+        stop("check_names must be of type `boolean`", call. = FALSE)
+    }
+    if (!is.logical(verbose)){
+        stop("verbose must be of type `boolean`", call. = FALSE)
+    }
+}
+
+
 #' Read Data From ODS File
 #'
 #' read_ods is a function to read a single sheet from an ods file and return a data frame.
@@ -77,7 +120,7 @@
 #' @param check_names logical, passed down to base::data.frame(). Default is FALSE.
 #' @param verbose logical, if messages should be displayed. Default is FALSE.
 #' @return A data frame (\code{data.frame}) containing a representation of data in the ods file.
-#' @note Currently, ods files that linked to external data source cannot be read. Merged cells cannot be parsed correctly.
+#' @note For flat ods files (.fods or .xml), use (\code{read_fods}).
 #' @author Peter Brohan <peter.brohan+cran@@gmail.com>, Chung-hong Chan <chainsawtiney@@gmail.com>, Gerrit-Jan Schutten <phonixor@@gmail.com>
 #' @examples
 #' \dontrun{
@@ -103,42 +146,66 @@ read_ods <- function(path,
                         verbose = FALSE
 
 ){
-    if (missing(path) || !is.character(path)){
-        stop("No file path was provided for the 'path' argument. Please provide a path to a file to import.")
-    }
-    if (!file.exists(path)){
-        stop("file does not exist")
-    }
-    if (!is.logical(col_names)){
-        stop("col_names must be of type `boolean`")
-    }
-    if (!is.logical(formula_as_formula)){
-        stop("formula_as_formula must be of type `boolean`")
-    }
-    if (!is.logical(row_names)){
-        stop("row_names must be of type `boolean`")
-    }
-    if (!is.logical(strings_as_factors)){
-        stop("strings_as_factors must be of type `boolean`")
-    }
-    if (!is.logical(check_names)){
-        stop("check_names must be of type `boolean`")
-    }
-    if (!is.logical(verbose)){
-        stop("verbose must be of type `boolean`")
-    }
+    ## Should use match.call but there's a weird bug if one of the variable names is 'file'
+    .read_ods(path,
+        sheet,
+        col_names,
+        col_types,
+        na,
+        skip,
+        formula_as_formula,
+        range,
+        row_names,
+        strings_as_factors,
+        check_names,
+        verbose,
+        flat = FALSE)
+}
+
+
+
+.read_ods <- function(path,
+                        sheet = 1,
+                        col_names = TRUE,
+                        col_types = NULL,
+                        na = "",
+                        skip = 0,
+                        formula_as_formula = FALSE,
+                        range = NULL,
+                        row_names = FALSE,
+                        strings_as_factors = FALSE,
+                        check_names = FALSE,
+                        verbose = FALSE,
+                        flat = FALSE){
+
+    .check_read_args(path,
+        sheet,
+        col_names,
+        col_types,
+        na,
+        skip, 
+        formula_as_formula,
+        range,
+        row_names,
+        strings_as_factors,
+        check_names,
+        verbose)
 
     # Get cell range info
     limits <- .standardise_limits(range, skip)
     # Get sheet number.
-    sheets <- ods_get_sheet_names_(path, TRUE)
+    if (flat){
+        sheets <- get_flat_sheet_names_(path, TRUE)
+    } else {
+        sheets <- get_sheet_names_(path, TRUE)
+    }
     sheet_name <- cellranger::as.cell_limits(range)[["sheet"]]
     if(!is.null(range) && !is.na(sheet_name)){
         if(sheet != 1){
             warning("Sheet suggested in range and using sheet argument. Defaulting to range", call. = FALSE)
         }
+        is_in_sheet_names <- stringi::stri_cmp(sheet_name, sheets) == 0
         if(any(is_in_sheet_names)){
-            is_in_sheet_names <- stringi::stri_cmp(sheet_name, sheets) == 0
             sheet = which(is_in_sheet_names)
         } else {
             stop(paste0("No sheet found with name '", sheet_name, "'", sep = ""), call. = FALSE)
@@ -155,6 +222,15 @@ read_ods <- function(path,
         }
     }
 
+    if(flat){
+    strings <- read_flat_ods_(path,
+        limits["min_row"],
+        limits["max_row"],
+        limits["min_col"],
+        limits["max_col"],
+        sheet,
+        formula_as_formula)
+    } else {
     strings <- read_ods_(path,
         limits["min_row"],
         limits["max_row"],
@@ -162,6 +238,7 @@ read_ods <- function(path,
         limits["max_col"],
         sheet,
         formula_as_formula)
+    }
     if(strings[1] == 0 || strings[2] == 0){
         warning("empty sheet, return empty data frame.", call. = FALSE)
         return(data.frame())
@@ -186,5 +263,5 @@ read_ods <- function(path,
     }
 
     return(res)
-}
 
+}

@@ -10,7 +10,7 @@
 #' use \code{\link{read_ods}} to read the data
 #' @export
 list_ods_sheets <- function(path, include_external_data = FALSE) {
-    return(ods_get_sheet_names_(path, include_external_data))
+    return(get_sheet_names_(path, include_external_data))
 }
 
 #' Get the Number of Sheets in an ODS File
@@ -25,6 +25,6 @@ list_ods_sheets <- function(path, include_external_data = FALSE) {
 #' use \code{\link{read_ods}} to read the data
 #' @export
 get_num_sheets_in_ods <- function(path, include_external_data = FALSE) {
-    sheets <- ods_get_sheet_names_(path, include_external_data)
+    sheets <- get_sheet_names_(path, include_external_data)
     return(length(sheets))
 }
