@@ -51,7 +51,26 @@ Parsing is now done in C++ which should significantly improve speed. Performance
 
 Speed is also improved as the package will now only parse the requested range of a sheet if requested, which significantly speeds up gathering a small amount of data from a large sheet
 
+## read_fods
+
+Now reads flat ods files. This checks to make sure that it's a correct single-document ODS file, and uses a common .read_ods function internally to read either flat or packaged ODS files
+
 ## Why no objects and classes? That's what readxl does!
 
 I think they make things hard to read (and I am bad at them). We could create a worksheet object and use internal methods to read the data, 
 but it would still need to be instantiated every time we read the sheet. 
+
+## How do read_ods_ (and read_flat_ods_) work now?
+ 
+`.standardise_limits()` converts the range request into limits in the form `c(min_row, max_row, min_col, max_col)`. If `max_row` or `max_col` are -1, this reads to the edge of the spreadsheet in the y or x direction respectively.
+
+The list of sheets in the file is then parsed to check if the sheet name is valid.
+(This is not optimal, as this parses the sheet twice when it could be done during the main read. It's not actually that slow though, so I've left it for now).
+
+The xml contents file is then read into memory using `rapidxml`.
+
+**`read_ods_()`** or **`read_flat_ods_()`** then attempts to parse the sheet, running **`find_rows()`** to build an array of pointers to the nodes containing the cells of of the spreadsheet (although only those requested in the range). The maximal width of this array is then the width of the resulting array. 
+
+We then loop through the array to build a vector of strings, beginning with the width and length of the output as strings. We then parse the cells into this vector in order, padding any rows which are not of sufficient length. This string is passed back to R.
+
+The remainder is similar to the previous version, this list of strings is turned into a matrix of appropriate dimensions, which becomes a dataframe, is given headers and has the column types assigned by `readr`.
