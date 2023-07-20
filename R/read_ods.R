@@ -202,23 +202,27 @@ read_ods <- function(path,
     sheet_name <- cellranger::as.cell_limits(range)[["sheet"]]
     if(!is.null(range) && !is.na(sheet_name)){
         if(sheet != 1){
-            warning("Sheet suggested in range and using sheet argument. Defaulting to range", call. = FALSE)
+            warning("Sheet suggested in range and using sheet argument. Defaulting to range",
+                call. = FALSE)
         }
         is_in_sheet_names <- stringi::stri_cmp(sheet_name, sheets) == 0
         if(any(is_in_sheet_names)){
-            sheet = which(is_in_sheet_names)
+            sheet <- which(is_in_sheet_names)
         } else {
-            stop(paste0("No sheet found with name '", sheet_name, "'", sep = ""), call. = FALSE)
+            stop(paste0("No sheet found with name '", sheet_name, "'", sep = ""),
+                call. = FALSE)
         }
     } else {
         is_in_sheet_names <- stringi::stri_cmp(sheet, sheets) == 0
         if (!is.numeric(sheet) && any(is_in_sheet_names)){
-            sheet = which(is_in_sheet_names)
+            sheet <- which(is_in_sheet_names)
         } else if (!is.numeric(sheet)) {
-            stop(paste0("No sheet found with name '", sheet, "'", sep = ""),call. = FALSE)
+            stop(paste0("No sheet found with name '", sheet, "'", sep = ""), 
+                call. = FALSE)
         }
         if (sheet > length(sheets)){
-            stop(paste0("File contains only ", length(sheets), " sheets. Sheet index out of range.", call. = FALSE))
+            stop(paste0("File contains only ", length(sheets), " sheets. Sheet index out of range.",
+                call. = FALSE))
         }
     }
 
@@ -255,7 +259,8 @@ read_ods <- function(path,
     } else if (length(col_types) == 1 && is.na(col_types[1])) {
         {} #Pass
     } else {
-        stop("Unknown col_types. Can either be a class col_spec, NULL or NA.", call. = FALSE)
+        stop("Unknown col_types. Can either be a class col_spec, NULL or NA.",
+            call. = FALSE)
     }
 
     if (strings_as_factors) {

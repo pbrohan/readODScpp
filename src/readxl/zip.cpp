@@ -22,23 +22,3 @@ bool zip_has_file(const std::string& zip_path,
   cpp11::function zip_has_file = cpp11::package("readODScpp")["zip_has_file"];
   return zip_has_file(zip_path, file_path);
 }
-
-std::string xml_print(std::string xml) {
-  rapidxml::xml_document<> doc;
-
-  xml.push_back('\0');
-  doc.parse<0>(&xml[0]);
-
-  std::string s;
-  rapidxml::print(std::back_inserter(s), doc, 0);
-
-  return s;
-}
-
-[[cpp11::register]]
-void zip_xml(const std::string& zip_path,
-             const std::string& file_path) {
-
-  std::string buffer = zip_buffer(zip_path, file_path);
-  Rprintf("%s", xml_print(buffer).c_str());
-}

@@ -83,3 +83,8 @@ test_that("Deals with repeated spaces correctly when fetching only part of sheet
     expect_equal(read_ods("../testdata/multisheet.ods", range = "Sheet2!B4:E7", col_names = FALSE), df)
     expect_equal(read_ods("../testdata/excel_repeat.ods", range = "A9:B18", col_names = FALSE)[5,1], "C")
 })
+
+test_that("Warns of empty sheet", {
+    expect_warning(read_ods("../testdata/empty.ods"))
+    expect_warning(read_fods("../testdata/empty.fods"))
+})

@@ -4,7 +4,7 @@
 #include <cstring>
 #include <fstream>
 
-bool is_ods(const std::string file, const bool strict){
+bool is_ods(const std::string file){
     /*Checks that file conforms to some of the spec at
     https://docs.oasis-open.org/office/OpenDocument/v1.3/.
 
@@ -19,23 +19,6 @@ bool is_ods(const std::string file, const bool strict){
         return false;
     }
 
-
-    /*Mimetype is not in v1.0 so mostly we ignore this. Keeping this here in case it's useful later
-    as it is a requirement of later versions*/
-    if(strict) {
-        if (!zip_has_file(file, "mimetype")){
-            return false;
-        }
-        /*Check Section 2.2.4 B)*/
-        std::string mimetype = zip_buffer(file, "mimetype");
-        mimetype = mimetype.replace(mimetype.end()-1,mimetype.end(),""); // This is some very lazy string trimming
-        if (!(strcmp(
-            mimetype.c_str(),
-            "application/vnd.oasis.opendocument.spreadsheet" // We also don't accept templates
-        ) == 0)){
-            return false;
-        }
-    }
     rapidxml::xml_document<> workbook;
     rapidxml::xml_node<>* rootNode;
     std:: string xmlFile = zip_buffer(file, "content.xml");
@@ -64,7 +47,7 @@ bool is_ods(const std::string file, const bool strict){
     return true;
 }
 
-bool is_flat_ods(const std::string file, const bool strict){
+bool is_flat_ods(const std::string file){
     /*Checks that file conforms to some of the spec at
     https://docs.oasis-open.org/office/OpenDocument/v1.3/.*/
     rapidxml::xml_document<> workbook;
@@ -101,17 +84,6 @@ bool is_flat_ods(const std::string file, const bool strict){
     }
     if (rootNode == 0){
         return false;
-    }
-
-    // Mimetype is not part of earlier OpenDocument specs, so we do not require it
-    if(strict){
-            rapidxml::xml_attribute<>* mimetype = 
-                rootNode->first_attribute("office:mimetype");
-        if(mimetype != 0){
-            if(strcmp(mimetype->value(),"application/vnd.oasis.opendocument.spreadsheet")){
-                return false;
-            }
-        }
     }
 
     /*Check Section 3.3 C)*/

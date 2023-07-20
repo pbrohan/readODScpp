@@ -82,7 +82,7 @@ std::vector<std::vector<rapidxml::xml_node<>*>> find_rows(rapidxml::xml_node<>* 
     this way*/
     int row_repeat_count;
     int col_repeat_count;
-    rapidxml::xml_node<>* row = sheet->first_node("table:table-row");
+
     rapidxml::xml_node<>* cell;
 
     if (start_row < 1){
@@ -92,8 +92,15 @@ std::vector<std::vector<rapidxml::xml_node<>*>> find_rows(rapidxml::xml_node<>* 
         start_col = 1;
     }
     int nrows = stop_row - start_row + 1;
-
+    
     std::vector<std::vector<rapidxml::xml_node<>*>> rows((nrows < 1) ? 1 : nrows);
+    
+    rapidxml::xml_node<>* row = sheet->first_node("table:table-row");
+
+    // If table has no rows or cells, return blank
+    if (row == 0 ||  row->first_node("table:table-cell") ==  0){
+        return rows;
+    }
 
     for (int i = 1; i <= stop_row || stop_row < 1; ){
         // i keeps track of what nominal row we are on
