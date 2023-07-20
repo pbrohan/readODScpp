@@ -1,6 +1,8 @@
 .Rproj.user
 .Rhistory
-.Rdata
-.httr-oauth
+.RData
+.~lock*
 .DS_Store
-.vscode
+inst/doc
+doc
+Meta

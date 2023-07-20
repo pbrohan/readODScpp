@@ -9,6 +9,7 @@
 
 #include <string>
 #include <fstream>
+#include <iostream>
 
 cpp11::strings get_sheet_names_from_content (rapidxml::xml_node<>* rootNode, const bool include_external_data){
 
@@ -47,6 +48,7 @@ cpp11::strings get_sheet_names_from_content (rapidxml::xml_node<>* rootNode, con
 
 [[cpp11::register]]
 cpp11::strings get_sheet_names_(const std::string file, const bool include_external_data){
+    std::cout << "parp";
     if (!is_ods(file)){
         throw std::invalid_argument(file + " is not a correct ODS file");
     }
@@ -58,7 +60,7 @@ cpp11::strings get_sheet_names_(const std::string file, const bool include_exter
 
     rootNode = spreadsheet.first_node()->first_node("office:body")->
         first_node("office:spreadsheet");
-    
+    std::cout<< "porp";
     return (get_sheet_names_from_content(rootNode, include_external_data));
 
 }

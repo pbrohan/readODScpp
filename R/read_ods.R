@@ -177,7 +177,7 @@ read_ods <- function(path,
                         check_names = FALSE,
                         verbose = FALSE,
                         flat = FALSE){
-
+    print("beep1")
     .check_read_args(path,
         sheet,
         col_names,
@@ -190,15 +190,17 @@ read_ods <- function(path,
         strings_as_factors,
         check_names,
         verbose)
-
+    print("beep2")
     # Get cell range info
     limits <- .standardise_limits(range, skip)
     # Get sheet number.
+    print("beep3")
     if (flat){
         sheets <- get_flat_sheet_names_(path, TRUE)
     } else {
         sheets <- get_sheet_names_(path, TRUE)
     }
+    print("beep4")
     sheet_name <- cellranger::as.cell_limits(range)[["sheet"]]
     if(!is.null(range) && !is.na(sheet_name)){
         if(sheet != 1){
