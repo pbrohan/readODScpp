@@ -77,6 +77,13 @@ The remainder is similar to the previous version, this list of strings is turned
 
 # writeODS
 
-I haven't significantly updated writeODS, however I fixed issue #107, which it turns out is a character encoding issue specific to R on Windows. `cat` will write whatever you ask it to into the file, even if the encoding does not match the rest of the file. However we can force characters to be written in UTF-8 by setting the file-connection encoding to UTF-8.
+I haven't significantly updated writeODS, however I think I have gone some way to fixing issue #107, which it turns out is a character encoding issue specific to old versions R on Windows (versions of R since 4.2 now use UTF-8 as default and shoudln't have this issue).
 
-To have correct ODS file, we need to convert all character encoding to UTF-8 anyway, as this is in the header. This does make things slower, but no longer produces invalid or unecpected results on Windows machines.
+`cat` will write whatever you ask it to into the file, even if the encoding does not match the rest of the file. However we can try andforce characters to be written in UTF-8 by setting the file-connection encoding to UTF-8, which fixes some of the issue although not all. 
+
+Insert results of checking old versions of R
+
+Running R in Radian can cause the same issue even with a modern version of R (>=4.2) however (see [this issue](https://github.com/randy3k/radian/issues/269#issuecomment-1169663251)) due to Python's handling of UTF-8. Using the .Rprofile settings from the comment fixes the issue.
+
+I've added a note to the readme to address this.
+
