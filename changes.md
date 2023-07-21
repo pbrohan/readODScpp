@@ -74,3 +74,9 @@ The xml contents file is then read into memory using `rapidxml`.
 We then loop through the array to build a vector of strings, beginning with the width and length of the output as strings. We then parse the cells into this vector in order, padding any rows which are not of sufficient length. This string is passed back to R.
 
 The remainder is similar to the previous version, this list of strings is turned into a matrix of appropriate dimensions, which becomes a dataframe, is given headers and has the column types assigned by `readr`.
+
+# writeODS
+
+I haven't significantly updated writeODS, however I fixed issue #107, which it turns out is a character encoding issue specific to R on Windows. `cat` will write whatever you ask it to into the file, even if the encoding does not match the rest of the file. However we can force characters to be written in UTF-8 by setting the file-connection encoding to UTF-8.
+
+To have correct ODS file, we need to convert all character encoding to UTF-8 anyway, as this is in the header. This does make things slower, but no longer produces invalid or unecpected results on Windows machines.

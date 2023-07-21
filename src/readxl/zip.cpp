@@ -8,7 +8,7 @@
 
 std::string zip_buffer(const std::string& zip_path,
                        const std::string& file_path) {
-  cpp11::function zip_buffer = cpp11::package("readODScpp")["zip_buffer"];
+  cpp11::function zip_buffer = cpp11::package("readODS")["zip_buffer"];
 
   cpp11::raws xml(zip_buffer(zip_path, file_path));
   std::string buffer(RAW(xml), RAW(xml) + xml.size());
@@ -19,6 +19,6 @@ std::string zip_buffer(const std::string& zip_path,
 
 bool zip_has_file(const std::string& zip_path,
                   const std::string& file_path) {
-  cpp11::function zip_has_file = cpp11::package("readODScpp")["zip_has_file"];
+  cpp11::function zip_has_file = cpp11::package("readODS")["zip_has_file"];
   return zip_has_file(zip_path, file_path);
 }
