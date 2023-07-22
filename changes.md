@@ -77,11 +77,13 @@ The remainder is similar to the previous version, this list of strings is turned
 
 # writeODS
 
-I haven't significantly updated writeODS, however I think I have gone some way to fixing issue #107, which it turns out is a character encoding issue specific to old versions R on Windows (versions of R since 4.2 now use UTF-8 as default and shoudln't have this issue).
+I haven't significantly updated writeODS, however I think I have gone some way towards fixing issue #107, which it turns out is a character encoding issue specific to old versions R on Windows (versions of R since 4.2 now use UTF-8 as default and shoudln't have this issue).
 
 `cat` will write whatever you ask it to into the file, even if the encoding does not match the rest of the file. However we can try andforce characters to be written in UTF-8 by setting the file-connection encoding to UTF-8, which fixes some of the issue although not all. 
 
-Insert results of checking old versions of R
+On older versions of R (tested on 3.6.1 and 4.1.2) this doesn't quite fix the issuse, as R seems to print characters outside the current locale as escaped UTF-8 codes (e.g ぅ is printed as `<U+3045>`). It will write this code in place of the letter whenever it prints it. This means that things that look a lot like invalid XML nodes appear in the output. (This isn't picked up by `.escapexml()` as it still views the letter as a single character.)
+
+Practical solutions to this for old versions of R are either to remove characters outside the current locale from printing, or to write a new writeODS function in C++, as this will not care about R's locale. The real solution however is to update R past 4.2.
 
 Running R in Radian can cause the same issue even with a modern version of R (>=4.2) however (see [this issue](https://github.com/randy3k/radian/issues/269#issuecomment-1169663251)) due to Python's handling of UTF-8. Using the .Rprofile settings from the comment fixes the issue.
 

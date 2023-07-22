@@ -245,9 +245,12 @@ read_ods <- function(path,
         warning("empty sheet, return empty data frame.", call. = FALSE)
         return(data.frame())
     }
-    res <- strings[-1:-2] |>
-        matrix(ncol = strtoi(strings[1]), byrow = TRUE) |>
-        as.data.frame(stringsAsFactors = FALSE)
+    res <- as.data.frame(
+            matrix(
+                strings[-1:-2],
+                ncol = strtoi(strings[1]),
+        byrow = TRUE),
+        stringsAsFactors = FALSE)
     res <- .change_df_with_col_row_header(res, col_names, row_names)
     res <- data.frame(res, check.names = check_names)
     if (inherits(col_types, 'col_spec')){

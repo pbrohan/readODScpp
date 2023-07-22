@@ -8,10 +8,12 @@ notes.R
 ^\.travis\.yml$
 ^codecov\.yml$
 ^starwars\.ods$
+^starwars\.fods$
 ^CRAN-RELEASE$
 ^doc$
 ^Meta$
 ^\.github$
+^\.gitignore$
 ^codemeta\.json$
 ^benchmark$
 ^CRAN-SUBMISSION$
